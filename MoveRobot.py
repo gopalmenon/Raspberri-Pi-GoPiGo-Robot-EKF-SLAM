@@ -21,6 +21,7 @@ ROBOT_WIDTH_CM = ROBOT_WIDTH_INCHES * INCHES_TO_CM
 # Encoder definition
 ENCODER_STEPS_PER_REVOLUTION = 18
 DISTANCE_PER_ENCODER_STEP = numpy.pi * ROBOT_WHEEL_DIAMETER_CM / ENCODER_STEPS_PER_REVOLUTION
+ENCODER_STEPS_FOR_ABOUT_TURN = 24
 
 # Default speed
 DEFAULT_ROBOT_SPEED = 75
@@ -46,7 +47,7 @@ def go_backwards(backwards_distance):
 	gopigo.enc_tgt(1, 1, encoder_steps_required)
 	gopigo.bwd()
 
-# Turn in place by the degrees specified. Negative for ancti-clockwise.
+# Turn in place by the degrees specified. Negative for anti-clockwise.
 def turn_in_place(degrees_to_turn):
 
 	# Turning amount should not be more than 360 degrees
@@ -62,5 +63,16 @@ def turn_in_place(degrees_to_turn):
 		else: 
 			degrees_to_turn = FULL_REVOLUTION_DEGREES + degrees_to_turn
 
-	print("Turn degrees", degrees_to_turn)
+	#Compute the number of encoder steps needed
+	encoder_steps_needed = int(ENCODER_STEPS_FOR_ABOUT_TURN * abs(degrees_to_turn) / FULL_REVOLUTION_DEGREES)
 	
+	#If encoder steps needed are zero, due to truncation, do nothing
+	if encoder_steps_needed == 0:
+		return
+	
+	#Turn the number of encoder steps computed
+	gopigo.enc_tgt(1, 1, abs(encoder_steps_needed))
+	if degrees_to_turn > 0:
+		gopigo.right_rot()
+	else:
+		gopigo.left_rot()
