@@ -29,7 +29,7 @@ SENSE_UNCERTAINTY = numpy.matrix([[0, 0, 0],
 # Make a sweep and return distance to obstacles
 def make_sweep():
 	
-	bearing = numpy.zeros(NUMBER_OF_SCANS)
+	obstacle_range = numpy.zeros(NUMBER_OF_SCANS)
 	index = 0
 	gopigo.enable_servo()
 
@@ -42,14 +42,14 @@ def make_sweep():
 		
 		#Take into account sense lmits
 		if distance < SENSE_LIMIT and distance >= 0:
-			bearing[index] = distance
+			obstacle_range[index] = distance
 		else:
-			bearing[index] = SENSE_LIMIT
+			obstacle_range[index] = SENSE_LIMIT
 
 		index += 1		
 
 	gopigo.disable_servo()
-	return bearing
+	return obstacle_range
 
 # Return angle to obstacle given bearing array index
 def get_angle_to_obstacle(index):
@@ -62,29 +62,44 @@ def get_angle_to_obstacle(index):
 # Return angle and distance to nearest obstacle
 def get_nearest_obstacle():
 
-	bearing = make_sweep()
-	nearest_obstacle_index = numpy.argmin(bearing)
-	if (bearing[nearest_obstacle_index] == SENSE_LIMIT):
+	obstacle_range = make_sweep()
+	nearest_obstacle_index = numpy.argmin(obstacle_range)
+	if (obstacle_range[nearest_obstacle_index] == SENSE_LIMIT):
 		no_obstacles_found = True
 	else:
 		no_obstacles_found = False
 
 	#Look for an obstacle
+	search_angle = 0
 	while no_obstacles_found:
 		
 		# Turn clockwise by 45 degrees to check there
+		search_angle += SEARCH_LANDMARK_STEP
 		MoveRobot.turn_in_place(SEARCH_LANDMARK_STEP)
 
 		# Look for obstacles
-		bearing = make_sweep()
-		nearest_obstacle_index = numpy.argmin(bearing)
-		if (bearing[nearest_obstacle_index] == SENSE_LIMIT):
+		obstacle_range = make_sweep()
+		nearest_obstacle_index = numpy.argmin(obstacle_range)
+		if (obstacle_range[nearest_obstacle_index] == SENSE_LIMIT):
 			no_obstacles_found = True
 		else:
 			no_obstacles_found = False
-		
-		if no_obstacles_found:
+
+		# if no obstacle found anywhere, move forward and search again
+		if no_obstacles_found and search_angle >= MoveRobot.FULL_REVOLUTION_DEGREES :
+			search_angle = 0
+			print("Going to move ", MoveRobot.ROBOT_LENGTH_CM)
 			MoveRobot.go_forward(MoveRobot.ROBOT_LENGTH_CM)
 
-	return get_angle_to_obstacle(nearest_obstacle_index), bearing[nearest_obstacle_index]
-	
+	return get_angle_to_obstacle(nearest_obstacle_index), obstacle_range[nearest_obstacle_index]
+
+# Go towards the nearest obstacle ahead	
+def go_towards_nearest_obstacle():
+
+	# get nearest obstacle
+	bearing_to_obstacle, range_to_obstacle = get_nearest_obstacle()
+
+	# Turn towards it
+	MoveRobot.turn_in_place(bearing_to_obstacle)
+
+

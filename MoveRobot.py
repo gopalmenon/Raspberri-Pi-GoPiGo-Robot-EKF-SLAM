@@ -34,6 +34,7 @@ MOVEMENT_UNCERTAINTY = numpy.matrix([[0, 0, 0],
 # Go forward by a fixed amount
 def go_forward(forward_distance):
 	
+	gopigo.enable_encoders()
 	encoder_steps_required = int(forward_distance / DISTANCE_PER_ENCODER_STEP)
 	gopigo.set_speed(DEFAULT_ROBOT_SPEED)
 	gopigo.enc_tgt(1, 1, encoder_steps_required)
@@ -42,6 +43,7 @@ def go_forward(forward_distance):
 # Go back by a fixed amount
 def go_backwards(backwards_distance):
 	
+	gopigo.enable_encoders()
 	encoder_steps_required = int(backwards_distance / DISTANCE_PER_ENCODER_STEP)
 	gopigo.set_speed(DEFAULT_ROBOT_SPEED)
 	gopigo.enc_tgt(1, 1, encoder_steps_required)
@@ -71,6 +73,7 @@ def turn_in_place(degrees_to_turn):
 		return
 	
 	#Turn the number of encoder steps computed
+	gopigo.enable_encoders()
 	gopigo.enc_tgt(1, 1, abs(encoder_steps_needed))
 	if degrees_to_turn > 0:
 		gopigo.right_rot()
