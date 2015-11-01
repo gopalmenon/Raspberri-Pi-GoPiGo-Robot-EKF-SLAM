@@ -16,7 +16,7 @@ SCAN_STEP = 10
 NUMBER_OF_SCANS = int((SCAN_END - SCAN_START) / SCAN_STEP) + 1
 SLEEP_TIME_BETWEEN_STEPS = 0.25
 SENSE_LIMIT = 250
-SEARCH_LANDMARK_STEP = 45
+SEARCH_LANDMARK_STEP = 20
 
 #Robot heading in terms of servo
 ROBOT_HEADING_FOR_SERVO = 90
@@ -73,7 +73,7 @@ def get_nearest_obstacle():
 	search_angle = 0
 	while no_obstacles_found:
 		
-		# Turn clockwise by 45 degrees to check there
+		# Turn clockwise by the step degrees to check there
 		search_angle += SEARCH_LANDMARK_STEP
 		MoveRobot.turn_in_place(SEARCH_LANDMARK_STEP)
 

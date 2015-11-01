@@ -2,6 +2,7 @@
 
 import numpy
 import gopigo
+import random
 import time
 
 import SenseLandmarks
@@ -30,6 +31,7 @@ ENCODER_TARGET_REACHED = 0
 # Default speed
 DEFAULT_ROBOT_SPEED = 75
 SLEEP_TIME_BETWEEN_STEPS = 0.25
+TURN_STEP = 45
 
 #Movement uncertainty obtained from measurements
 MOVEMENT_UNCERTAINTY = numpy.matrix([[0, 0, 0],
@@ -105,7 +107,7 @@ def go_towards_nearest_obstacle():
 	# Turn towards it
 	turn_in_place(bearing_to_obstacle)
 
-	while range_to_obstacle > 2 * ROBOT_LENGTH_CM:
+	while range_to_obstacle > 2.5 * ROBOT_LENGTH_CM:
 
 		go_forward(ROBOT_LENGTH_CM)
 
@@ -114,3 +116,31 @@ def go_towards_nearest_obstacle():
 
 		# Turn towards it
 		turn_in_place(bearing_to_obstacle)
+
+	print("Return from go to obstacle")
+
+# Return a random value for turning left or right
+def turn_right():
+
+	return bool(random.getrandbits(1))
+
+# Coastal navigation for robot. Keep moving in between obstacles
+def coastal_navigation():
+	
+	count = 0
+	while True:
+
+		go_towards_nearest_obstacle()
+
+		if turn_right():
+			print("Turn right")
+			turn_in_place(TURN_STEP)
+		else:
+			print("Turn left")
+			turn_in_place(-1 * TURN_STEP)
+
+		go_forward(ROBOT_LENGTH_CM)
+		count += 1
+		print("Count is ", count)
+		if count > 10:
+			break
