@@ -8,5 +8,5 @@ import time
 #MoveRobot.go_backwards(100)
 
 
-print(SenseLandmarks.go_towards_nearest_obstacle())
+print(MoveRobot.go_towards_nearest_obstacle())
 print("Voltage ", gopigo.volt())

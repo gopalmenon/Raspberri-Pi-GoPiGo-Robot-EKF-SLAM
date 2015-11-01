@@ -3,6 +3,8 @@
 import numpy
 import gopigo
 
+import SenseLandmarks
+
 # Unit conversion
 INCHES_TO_CM = 2.54
 FULL_REVOLUTION_DEGREES = 360
@@ -79,3 +81,22 @@ def turn_in_place(degrees_to_turn):
 		gopigo.right_rot()
 	else:
 		gopigo.left_rot()
+
+# Go towards the nearest obstacle ahead	
+def go_towards_nearest_obstacle():
+
+	# get nearest obstacle
+	bearing_to_obstacle, range_to_obstacle = SenseLandmarks.get_nearest_obstacle()
+
+	# Turn towards it
+	turn_in_place(bearing_to_obstacle)
+
+	while range_to_obstacle > 2 * ROBOT_LENGTH_CM:
+
+		go_forward(ROBOT_LENGTH_CM)
+
+		# get nearest obstacle
+		bearing_to_obstacle, range_to_obstacle = SenseLandmarks.get_nearest_obstacle()
+
+		# Turn towards it
+		turn_in_place(bearing_to_obstacle)

@@ -92,14 +92,3 @@ def get_nearest_obstacle():
 			MoveRobot.go_forward(MoveRobot.ROBOT_LENGTH_CM)
 
 	return get_angle_to_obstacle(nearest_obstacle_index), obstacle_range[nearest_obstacle_index]
-
-# Go towards the nearest obstacle ahead	
-def go_towards_nearest_obstacle():
-
-	# get nearest obstacle
-	bearing_to_obstacle, range_to_obstacle = get_nearest_obstacle()
-
-	# Turn towards it
-	MoveRobot.turn_in_place(bearing_to_obstacle)
-
-
