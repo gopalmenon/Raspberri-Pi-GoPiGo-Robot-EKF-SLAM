@@ -24,9 +24,9 @@ AVERAGE_ANGLE_ERROR = -11.57
 ROBOT_HEADING_FOR_SERVO = 90
 
 #Scan uncertainty
-SENSE_UNCERTAINTY = numpy.matrix([[ 50.2790301042 -5.56573435692 0.0]
-                                  [-5.56573435692 24.8374625533  0.0]
-                                  [ 0.0            0.0           0.0]])
+SENSE_UNCERTAINTY = numpy.matrix([[ 50.2790301042, -5.56573435692, 0.0],
+                                  [-5.56573435692, 24.8374625533,  0.0],
+                                  [ 0.0,            0.0,           0.0]])
 
 # Make a sweep and return distance to obstacles
 def make_sweep():
