@@ -5,7 +5,7 @@ import SenseLandmarks
 # The outputs wil be used to compte the move and sense  uncertainty covariance matrices.
 
 # Constants
-NUMBER_OF_ITERATIONS = 30
+NUMBER_OF_ITERATIONS = 15
 
 # Get data for movement forward uncertainty
 def calibrate_move():

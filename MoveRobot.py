@@ -34,9 +34,9 @@ SLEEP_TIME_BETWEEN_STEPS = 0.25
 TURN_STEP = 45
 
 #Movement uncertainty obtained from measurements
-MOVEMENT_UNCERTAINTY = numpy.matrix([[0, 0, 0],
-                                     [0, 0, 0],
-                                     [0, 0, 0]])
+MOVEMENT_UNCERTAINTY = numpy.matrix([[0.616954022989 -0.0256264367816 2.15940804598]
+                                     [-0.0256264367816 0.185841954023 -0.707327011494]
+                                     [2.15940804598 -0.707327011494 33.2555481609]])
 
 # Wait till encoder target is reached
 def wait_till_encoder_target_reached():
