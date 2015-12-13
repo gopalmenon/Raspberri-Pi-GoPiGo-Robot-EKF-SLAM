@@ -7,7 +7,7 @@ import numpy
 ROBOT_POSE_DIMENSIONS = 3 
 MOVEMENT_TYPE_FORWARD = 1 
 MOVEMENT_TYPE_ROTATE_IN_PLACE = 2 
-INITIAL_ROBOT_POSE = numpy.matrix([0, 0, 0]).T 
+INITIAL_ROBOT_POSE = numpy.matrix([0, 0, numpy.pi / 2]).T 
 INITIAL_ROBOT_LOCATION_UNCERTAINTY = numpy.matrix([[0, 0, 0], [0, 0, 0],[0, 0, 0]])
 
 numberOfLandmarks = 0 
@@ -25,19 +25,26 @@ def getPredictedRobotPose(currentRobotPose, movementType, movementAmount):
 
 	newRobotPose = currentRobotPose
 	if movementType == MOVEMENT_TYPE_FORWARD:
-    		newRobotPose += dimensionTranslationMatrix.T * numpy.matrix([0, movementAmount, 0]).T
+    		newRobotPose += dimensionTranslationMatrix.T * numpy.matrix([movementAmount * numpy.cos(currentRobotPose.item((2, 0))), movementAmount * numpy.sin(currentRobotPose.item((2, 0))), 0]).T
 	else:
-    		newRobotPose += dimensionTranslationMatrix.T * numpy.matrix([0, 0, movementAmount]).T
+    		newRobotPose += dimensionTranslationMatrix.T * numpy.matrix([0, 0, currentRobotPose.item((2, 0)) + numpy.pi * movementAmount / MoveRobot.HALF_REVOLUTION_DEGREES]).T
 
 	return newRobotPose
 
-def getMovementJacobian():
+def getMovementJacobian(movementType, movementAmount, currentRobotPose):
 
-	return numpy.identity(3 * numberOfLandmarks + 3)
+	identityMatrix =  numpy.matrix(numpy.identity(3 * numberOfLandmarks + 3))
+	if movementType == MOVEMENT_TYPE_FORWARD:
+		movementDerivativeWrtPose = numpy.matrix([[0, 0, -1 * movementAmount * numpy.sin(numpy.pi * currentRobotPose.item((2, 0))/MoveRobot.HALF_REVOLUTION_DEGREES)],[0, 0, movementAmount * numpy.cos(numpy.pi * currentRobotPose.item((2, 0))/MoveRobot.HALF_REVOLUTION_DEGREES)],[0, 0, 0]])
+		dimensionTranslationMatrix = getDimensionTranslationMatrix()
+		return identityMatrix + dimensionTranslationMatrix.T * movementDerivativeWrtPose * dimensionTranslationMatrix
+	else:
+		return identityMatrix
+	
 
-def getPredictedRobotUncertainty(currentRobotLocationUncertainty):
+def getPredictedRobotUncertainty(currentRobotLocationUncertainty, movementType, movementAmount, currentRobotPose):
 
-	movementJacobian = getMovementJacobian()
+	movementJacobian = getMovementJacobian(movementType, movementAmount, currentRobotPose)
 	dimensionTranslationMatrix = getDimensionTranslationMatrix()
 
 	return movementJacobian*currentRobotLocationUncertainty*movementJacobian.T + dimensionTranslationMatrix.T * MoveRobot.MOVEMENT_UNCERTAINTY * dimensionTranslationMatrix

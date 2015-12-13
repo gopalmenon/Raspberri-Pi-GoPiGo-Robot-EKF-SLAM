@@ -56,7 +56,7 @@ def go_forward(forward_distance):
 	gopigo.fwd()
 	wait_till_encoder_target_reached()
 	RobotPosePrediction.currentRobotPose = RobotPosePrediction.getPredictedRobotPose(currentRobotPose = RobotPosePrediction.currentRobotPose, movementType = RobotPosePrediction.MOVEMENT_TYPE_FORWARD, movementAmount = encoder_steps_required * DISTANCE_PER_ENCODER_STEP)
-	RobotPosePrediction.currentRobotLocationUncertainty = RobotPosePrediction.getPredictedRobotUncertainty(currentRobotLocationUncertainty = RobotPosePrediction.currentRobotLocationUncertainty)
+	RobotPosePrediction.currentRobotLocationUncertainty = RobotPosePrediction.getPredictedRobotUncertainty(currentRobotLocationUncertainty = RobotPosePrediction.currentRobotLocationUncertainty, movementType = RobotPosePrediction.MOVEMENT_TYPE_FORWARD, movementAmount = encoder_steps_required * DISTANCE_PER_ENCODER_STEP, currentRobotPose = RobotPosePrediction.currentRobotPose)
 
 # Go back by a fixed amount
 def go_backwards(backwards_distance):
@@ -68,7 +68,7 @@ def go_backwards(backwards_distance):
 	gopigo.bwd()
 	wait_till_encoder_target_reached()
 	RobotPosePrediction.currentRobotPose = RobotPosePrediction.getPredictedRobotPose(currentRobotPose = RobotPosePrediction.currentRobotPose, movementType = RobotPosePrediction.MOVEMENT_TYPE_FORWARD, movementAmount = -1 * encoder_steps_required * DISTANCE_PER_ENCODER_STEP)
-	RobotPosePrediction.currentRobotLocationUncertainty = RobotPosePrediction.getPredictedRobotUncertainty(currentRobotLocationUncertainty = RobotPosePrediction.currentRobotLocationUncertainty)
+	RobotPosePrediction.currentRobotLocationUncertainty = RobotPosePrediction.getPredictedRobotUncertainty(currentRobotLocationUncertainty = RobotPosePrediction.currentRobotLocationUncertainty, movementType = RobotPosePrediction.MOVEMENT_TYPE_FORWARD, movementAmount = -1 * encoder_steps_required * DISTANCE_PER_ENCODER_STEP, currentRobotPose = RobotPosePrediction.currentRobotPose)
 
 # Turn in place by the degrees specified. Negative for anti-clockwise.
 def turn_in_place(degrees_to_turn):
@@ -105,7 +105,7 @@ def turn_in_place(degrees_to_turn):
 
 	wait_till_encoder_target_reached()
 	RobotPosePrediction.currentRobotPose = RobotPosePrediction.getPredictedRobotPose(currentRobotPose = RobotPosePrediction.currentRobotPose, movementType = RobotPosePrediction.MOVEMENT_TYPE_ROTATE_IN_PLACE, movementAmount = turnAngleSign * encoder_steps_needed * FULL_REVOLUTION_DEGREES / ENCODER_STEPS_PER_REVOLUTION)
-	RobotPosePrediction.currentRobotLocationUncertainty = RobotPosePrediction.getPredictedRobotUncertainty(currentRobotLocationUncertainty = RobotPosePrediction.currentRobotLocationUncertainty)
+	RobotPosePrediction.currentRobotLocationUncertainty = RobotPosePrediction.getPredictedRobotUncertainty(currentRobotLocationUncertainty = RobotPosePrediction.currentRobotLocationUncertainty, movementType = RobotPosePrediction.MOVEMENT_TYPE_ROTATE_IN_PLACE, movementAmount = turnAngleSign * encoder_steps_needed * FULL_REVOLUTION_DEGREES / ENCODER_STEPS_PER_REVOLUTION, currentRobotPose = RobotPosePrediction.currentRobotPose)
 
 # Go towards the nearest obstacle ahead	
 def go_towards_nearest_obstacle():
